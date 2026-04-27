@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useFinanceStore } from '../store/useFinanceStore';
 import { useAlerts } from '../hooks/useAlerts';
 import { formatCurrency, cn } from '../lib/utils';
-import { AlertCircle, TrendingUp, TrendingDown, CheckCircle2, ArrowRight, Plus, Target, Sparkles } from 'lucide-react';
+import { AlertCircle, TrendingUp, TrendingDown, CheckCircle2, ArrowRight, Plus, Target, Sparkles, Shield } from 'lucide-react';
 import { motion } from 'motion/react';
 import { format, addDays, isAfter, isBefore, startOfWeek, endOfWeek, subWeeks, startOfMonth } from 'date-fns';
 import { getTipOfTheDay } from '../lib/tips';
