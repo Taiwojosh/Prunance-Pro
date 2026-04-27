@@ -82,7 +82,7 @@ export default function Layout({ children, activeTab, setActiveTab }: LayoutProp
         {children}
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-gray-100 px-4 py-3 z-20 safe-area-bottom">
+      <nav className="tour-navigation fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-gray-100 px-4 py-3 z-20 safe-area-bottom">
         <div className="flex justify-between items-center max-w-lg mx-auto">
           {tabs.map((tab) => {
             const Icon = tab.icon;

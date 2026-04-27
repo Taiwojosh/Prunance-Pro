@@ -60,6 +60,7 @@ export interface UserProfile {
   privacyMode?: boolean;
   privacyLock?: string; // PIN
   notifiedAlerts?: string[]; // IDs of alerts already sent as system notifications
+  hasSeenJoyride?: boolean;
 }
 
 export interface FinanceState {

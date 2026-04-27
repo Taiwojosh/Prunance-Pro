@@ -78,7 +78,7 @@ export default function Dashboard({ onAddExpense, onNavigate }: { onAddExpense: 
       )}
 
       {/* Welcome Section */}
-      <section className="flex justify-between items-end">
+      <section className="tour-dashboard flex justify-between items-end">
         <div>
           <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">Welcome back,</p>
           <h2 className="text-3xl font-bold tracking-tight">{profile.name || 'Friend'}</h2>
@@ -250,7 +250,7 @@ export default function Dashboard({ onAddExpense, onNavigate }: { onAddExpense: 
         whileTap={{ scale: 0.9 }}
         whileHover={{ scale: 1.1 }}
         onClick={onAddExpense}
-        className="fixed bottom-24 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg shadow-blue-200 flex items-center justify-center transition-all z-30"
+        className="tour-add-expense fixed bottom-24 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg shadow-blue-200 flex items-center justify-center transition-all z-30"
       >
         <Plus className="w-6 h-6" />
       </motion.button>

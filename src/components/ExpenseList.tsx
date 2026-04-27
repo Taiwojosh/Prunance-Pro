@@ -92,11 +92,17 @@ export default function ExpenseList() {
           ))}
         </div>
       ) : (
-        <div className="py-20 text-center">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Receipt className="w-8 h-8 text-gray-300" />
-          </div>
-          <p className="text-gray-400 font-medium">No expenses logged yet.</p>
+        <div className="py-24 text-center flex flex-col items-center justify-center">
+          <svg className="w-32 h-32 mb-6 text-gray-200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="80" fill="currentColor" fillOpacity="0.3"/>
+            <path d="M100 60V140M60 100H140" stroke="white" strokeWidth="8" strokeLinecap="round"/>
+            <path d="M130 60C130 60 145 75 145 100C145 125 130 140 130 140" stroke="white" strokeWidth="8" strokeLinecap="round" opacity="0.5"/>
+            <path d="M70 60C70 60 55 75 55 100C55 125 70 140 70 140" stroke="white" strokeWidth="8" strokeLinecap="round" opacity="0.5"/>
+          </svg>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">No expenses yet</h3>
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest max-w-[200px]">
+            Your spending history will appear here
+          </p>
         </div>
       )}
     </div>

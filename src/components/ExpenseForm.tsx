@@ -4,6 +4,7 @@ import { Category, QuickAddTemplate } from '../types';
 import { X, Receipt, Plus, History, Save } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { formatCurrency, getCurrencySymbol, cn } from '../lib/utils';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 const categories: Category[] = ['Food', 'Transport', 'Shopping', 'Entertainment', 'Health', 'Bills', 'Other'];
 
@@ -23,6 +24,11 @@ export default function ExpenseForm({ onClose }: { onClose: () => void }) {
     
     const expenseAmount = Number(amount);
     
+    // Premium Haptic Feedback
+    try {
+      Haptics.impact({ style: ImpactStyle.Light });
+    } catch (e) {}
+
     addExpense({
       amount: expenseAmount,
       category,
@@ -42,6 +48,10 @@ export default function ExpenseForm({ onClose }: { onClose: () => void }) {
   };
 
   const handleQuickAdd = (template: QuickAddTemplate) => {
+    try {
+      Haptics.impact({ style: ImpactStyle.Medium });
+    } catch (e) {}
+
     addExpense({
       amount: template.amount,
       category: template.category,
