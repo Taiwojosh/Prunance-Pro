@@ -11,7 +11,7 @@ import QuickTour from './components/QuickTour';
 import PrivacyLock from './components/PrivacyLock';
 import { AnimatePresence, motion } from 'motion/react';
 import { Loader2 } from 'lucide-react';
-import Joyride, { CallBackProps, STATUS } from 'react-joyride';
+import { Joyride, STATUS } from 'react-joyride';
 
 // Adaptive Loading: Only load these components when the user clicks their tab
 const ExpenseList = lazy(() => import('./components/ExpenseList'));
@@ -31,7 +31,7 @@ export default function App() {
     init();
   }, [init]);
 
-  const handleJoyrideCallback = (data: CallBackProps) => {
+  const handleJoyrideCallback = (data: any) => {
     const { status } = data;
     const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
     
@@ -86,14 +86,13 @@ export default function App() {
           steps={tourSteps}
           run={true}
           continuous={true}
-          showSkipButton={true}
-          callback={handleJoyrideCallback}
+          onEvent={handleJoyrideCallback}
           styles={{
             options: {
               primaryColor: '#2563eb', // blue-600
               zIndex: 1000,
             }
-          }}
+          } as any}
         />
       )}
       
