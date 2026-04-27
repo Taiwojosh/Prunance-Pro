@@ -6,6 +6,7 @@ import { useFinanceStore } from '../store/useFinanceStore';
 import { motion, AnimatePresence } from 'motion/react';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Shield } from 'lucide-react';
+import Logo from './Logo';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -51,7 +52,10 @@ export default function Layout({ children, activeTab, setActiveTab }: LayoutProp
     <div className="min-h-screen bg-[#f5f5f5] pb-24 font-sans text-[#1a1a1a]">
       <header className="sticky top-0 z-10 bg-white/80 px-6 py-4 backdrop-blur-md border-b border-gray-100 safe-area-top">
         <div className="flex items-center justify-between max-w-lg mx-auto">
-          <h1 className="text-xl font-semibold tracking-tight">Prunance</h1>
+          <div className="flex items-center gap-3">
+            <Logo className="w-8 h-8 rounded-lg shadow-sm" />
+            <h1 className="text-xl font-semibold tracking-tight text-gray-900">Prunance</h1>
+          </div>
           <div className="flex items-center gap-1">
             <button 
               onClick={togglePrivacyMode} 

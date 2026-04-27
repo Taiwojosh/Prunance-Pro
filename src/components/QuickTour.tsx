@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useFinanceStore } from '../store/useFinanceStore';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { cn } from '../lib/utils';
+import Logo from './Logo';
 
 const commonCurrencies = [
   { code: 'USD', symbol: '$', name: 'US Dollar' },
@@ -49,8 +50,8 @@ export default function QuickTour() {
           className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl"
         >
           <div className="bg-blue-600 p-8 text-center text-white space-y-4">
-            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto backdrop-blur-md">
-              <Sparkles className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 bg-white/20 rounded-[1.25rem] flex items-center justify-center mx-auto backdrop-blur-md p-3 shadow-lg">
+              <Logo className="w-full h-full drop-shadow-md" />
             </div>
             <h2 className="text-2xl font-bold">Welcome to Prunance</h2>
             <p className="text-blue-100 text-sm">Let's set up your profile to personalize your experience.</p>
