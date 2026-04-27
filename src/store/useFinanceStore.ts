@@ -23,7 +23,8 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
       { id: 'q2', name: 'Lunch', amount: 12, category: 'Food' },
       { id: 'q3', name: 'Bus Fare', amount: 2.5, category: 'Transport' },
       { id: 'q4', name: 'Grocery', amount: 45, category: 'Food' },
-    ]
+    ],
+    notifiedAlerts: []
   },
 
   addExpense: async (expenseData) => {
@@ -170,7 +171,8 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
           { id: 'q2', name: 'Lunch', amount: 12, category: 'Food' },
           { id: 'q3', name: 'Bus Fare', amount: 2.5, category: 'Transport' },
           { id: 'q4', name: 'Grocery', amount: 45, category: 'Food' },
-        ]
+        ],
+        notifiedAlerts: []
       }
     });
   },
@@ -239,6 +241,18 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
 
   togglePrivacyMode: async () => {
     const newProfile = { ...get().profile, privacyMode: !get().profile.privacyMode };
+    await dbHelper.put('profile', { ...newProfile, id: 'current' });
+    set({ profile: newProfile });
+  },
+
+  markAlertAsNotified: async (id) => {
+    const notifiedAlerts = get().profile.notifiedAlerts || [];
+    if (notifiedAlerts.includes(id)) return;
+    
+    const newProfile = { 
+      ...get().profile, 
+      notifiedAlerts: [...notifiedAlerts, id] 
+    };
     await dbHelper.put('profile', { ...newProfile, id: 'current' });
     set({ profile: newProfile });
   },

@@ -59,6 +59,7 @@ export interface UserProfile {
   hasSeenTour: boolean;
   privacyMode?: boolean;
   privacyLock?: string; // PIN
+  notifiedAlerts?: string[]; // IDs of alerts already sent as system notifications
 }
 
 export interface FinanceState {
@@ -89,5 +90,6 @@ export interface FinanceState {
   completeTour: () => void;
   setPrivacyLock: (pin: string | undefined) => void;
   togglePrivacyMode: () => void;
+  markAlertAsNotified: (id: string) => void;
   init: () => Promise<void>;
 }

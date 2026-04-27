@@ -8,7 +8,28 @@
 
 @layer base {
   body {
-    @apply antialiased text-slate-900 bg-slate-50;
+    @apply antialiased text-slate-900 bg-slate-50 dark:bg-[#121212] dark:text-slate-100;
+  }
+  
+  :focus-visible {
+    @apply outline-none ring-2 ring-blue-500/50;
+  }
+
+  /* Universal Dark Mode Overrides */
+  .dark .bg-white {
+    @apply bg-zinc-900;
+  }
+  .dark .bg-slate-50 {
+    @apply bg-zinc-800/50;
+  }
+  .dark .border-gray-100, .dark .border-blue-50, .dark .border-gray-50 {
+    @apply border-zinc-800;
+  }
+  .dark .text-gray-900 {
+    @apply text-slate-100;
+  }
+  .dark .text-gray-500, .dark .text-gray-400 {
+    @apply text-slate-400;
   }
 }
 
@@ -19,6 +40,12 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-area-bottom {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
   }
 }
 

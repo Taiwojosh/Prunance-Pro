@@ -52,6 +52,31 @@ export default function Dashboard({ onAddExpense, onNavigate }: { onAddExpense: 
         </div>
       </motion.div>
 
+      {/* Privacy Lock Suggestion */}
+      {!profile.privacyLock && (
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="bg-blue-600 p-4 rounded-3xl text-white flex items-center justify-between shadow-lg shadow-blue-100"
+        >
+          <div className="flex items-center gap-3">
+            <div className="bg-white/20 p-2 rounded-xl">
+              <Shield className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <p className="text-sm font-bold">Secure your data</p>
+              <p className="text-[10px] opacity-80 uppercase font-bold">Setup Privacy Lock</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => onNavigate('settings')}
+            className="bg-white text-blue-600 px-4 py-2 rounded-xl text-xs font-bold"
+          >
+            Enable
+          </button>
+        </motion.div>
+      )}
+
       {/* Welcome Section */}
       <section className="flex justify-between items-end">
         <div>

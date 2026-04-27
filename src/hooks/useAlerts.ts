@@ -173,15 +173,18 @@ export function useAlerts() {
   }, []);
 
   useEffect(() => {
-    // If we have new alerts that weren't there before
-    if (filteredAlerts.length > lastAlertCount.current) {
-      const newAlerts = filteredAlerts.slice(lastAlertCount.current);
-      newAlerts.forEach(alert => {
+    // Check which alerts have NOT been notified yet
+    const notifiedIds = profile.notifiedAlerts || [];
+    const unnotifiedAlerts = filteredAlerts.filter(alert => !notifiedIds.includes(alert.id));
+
+    if (unnotifiedAlerts.length > 0) {
+      unnotifiedAlerts.forEach(alert => {
         notificationService.schedule(alert.title, alert.message);
+        // Persist the fact that we've notified this alert
+        useFinanceStore.getState().markAlertAsNotified(alert.id);
       });
     }
-    lastAlertCount.current = filteredAlerts.length;
-  }, [filteredAlerts]);
+  }, [filteredAlerts, profile.notifiedAlerts]);
 
   return {
     allAlerts: alerts,

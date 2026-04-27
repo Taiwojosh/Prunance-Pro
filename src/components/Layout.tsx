@@ -4,6 +4,8 @@ import { cn } from '../lib/utils';
 import { useAlerts } from '../hooks/useAlerts';
 import { useFinanceStore } from '../store/useFinanceStore';
 import { motion, AnimatePresence } from 'motion/react';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { Shield } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,6 +18,24 @@ export default function Layout({ children, activeTab, setActiveTab }: LayoutProp
   const { profile, togglePrivacyMode } = useFinanceStore();
   const alertCount = activeAlerts.length;
 
+  React.useEffect(() => {
+    const initMobileUI = async () => {
+      try {
+        await StatusBar.setBackgroundColor({ color: '#3b82f6' }); // Blue-600
+        await StatusBar.setStyle({ style: Style.Dark });
+      } catch (e) {
+        // Not on mobile
+      }
+    };
+    initMobileUI();
+
+    // Dark Mode Sync
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
+
   const tabs = [
     { id: 'dashboard', label: 'Home', icon: LayoutDashboard },
     { id: 'expenses', label: 'Expenses', icon: ReceiptText },
@@ -26,7 +46,7 @@ export default function Layout({ children, activeTab, setActiveTab }: LayoutProp
 
   return (
     <div className="min-h-screen bg-[#f5f5f5] pb-24 font-sans text-[#1a1a1a]">
-      <header className="sticky top-0 z-10 bg-white/80 px-6 py-4 backdrop-blur-md border-b border-gray-100">
+      <header className="sticky top-0 z-10 bg-white/80 px-6 py-4 backdrop-blur-md border-b border-gray-100 safe-area-top">
         <div className="flex items-center justify-between max-w-lg mx-auto">
           <h1 className="text-xl font-semibold tracking-tight">Prunance</h1>
           <div className="flex items-center gap-1">
@@ -59,7 +79,7 @@ export default function Layout({ children, activeTab, setActiveTab }: LayoutProp
         {children}
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-gray-100 px-4 py-3 pb-8 z-20 safe-area-bottom">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-gray-100 px-4 py-3 z-20 safe-area-bottom">
         <div className="flex justify-between items-center max-w-lg mx-auto">
           {tabs.map((tab) => {
             const Icon = tab.icon;
