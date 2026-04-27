@@ -19,21 +19,24 @@ export default function Layout({ children, activeTab, setActiveTab }: LayoutProp
   const alertCount = activeAlerts.length;
 
   React.useEffect(() => {
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
     const initMobileUI = async () => {
       try {
-        await StatusBar.setBackgroundColor({ color: '#3b82f6' }); // Blue-600
-        await StatusBar.setStyle({ style: Style.Dark });
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+          await StatusBar.setBackgroundColor({ color: '#121212' }); // Dark zinc
+          await StatusBar.setStyle({ style: Style.Dark });
+        } else {
+          document.documentElement.classList.remove('dark');
+          await StatusBar.setBackgroundColor({ color: '#ffffff' }); // White
+          await StatusBar.setStyle({ style: Style.Light });
+        }
       } catch (e) {
         // Not on mobile
       }
     };
     initMobileUI();
-
-    // Dark Mode Sync
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    }
   }, []);
 
   const tabs = [

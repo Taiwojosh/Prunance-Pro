@@ -16,17 +16,17 @@ import Settings from './components/Settings';
 import Notifications from './components/Notifications';
 import QuickTour from './components/QuickTour';
 import PrivacyLock from './components/PrivacyLock';
-import SplashScreen from './components/SplashScreen';
+import PrivacyLock from './components/PrivacyLock';
 import { AnimatePresence, motion } from 'motion/react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showExpenseForm, setShowExpenseForm] = useState(false);
-  const { init } = useFinanceStore();
+  const { init, isInitialized } = useFinanceStore();
 
   useEffect(() => {
-    (useFinanceStore.getState() as any).init();
-  }, []);
+    init();
+  }, [init]);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -49,9 +49,10 @@ export default function App() {
     }
   };
 
+  if (!isInitialized) return null;
+
   return (
     <Layout activeTab={activeTab} setActiveTab={setActiveTab}>
-      <SplashScreen />
       <PrivacyLock />
       <QuickTour />
       <AnimatePresence mode="wait">

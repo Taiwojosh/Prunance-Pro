@@ -67,6 +67,7 @@ export interface FinanceState {
   bills: Bill[];
   goals: SavingsGoal[];
   profile: UserProfile;
+  isInitialized: boolean;
   addExpense: (expense: Omit<Expense, 'id'>) => void;
   updateExpense: (id: string, expense: Partial<Expense>) => void;
   deleteExpense: (id: string) => void;

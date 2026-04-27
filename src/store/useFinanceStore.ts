@@ -26,6 +26,7 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
     ],
     notifiedAlerts: []
   },
+  isInitialized: false,
 
   addExpense: async (expenseData) => {
     const expense = { ...expenseData, id: generateId() };
@@ -276,7 +277,8 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
         quickAdds: dbProfile.quickAdds || get().profile.quickAdds,
         currency: dbProfile.currency || 'USD',
         lowBalanceThreshold: dbProfile.lowBalanceThreshold || 100
-      } : get().profile
+      } : get().profile,
+      isInitialized: true
     });
   }
 }));

@@ -15,6 +15,7 @@ export default function ExpenseForm({ onClose }: { onClose: () => void }) {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [saveAsTemplate, setSaveAsTemplate] = useState(false);
   const [templateName, setTemplateName] = useState('');
+  const [showQuickAdd, setShowQuickAdd] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,21 +80,40 @@ export default function ExpenseForm({ onClose }: { onClose: () => void }) {
         {/* Quick Add Section */}
         {(profile.quickAdds || []).length > 0 && (
           <section className="mb-8">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 flex items-center gap-2">
-              <Plus className="w-3 h-3" /> Quick Add
-            </h3>
-            <div className="grid grid-cols-2 gap-3">
-              {(profile.quickAdds || []).map((t) => (
-                <button
-                  key={t.id}
-                  onClick={() => handleQuickAdd(t)}
-                  className="p-4 bg-gray-50 rounded-2xl border border-gray-100 text-left hover:bg-blue-50 hover:border-blue-100 transition-all group min-w-0"
+            <button 
+              onClick={() => setShowQuickAdd(!showQuickAdd)}
+              className="w-full flex justify-between items-center text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 px-1"
+            >
+              <div className="flex items-center gap-2">
+                <Plus className="w-3 h-3" /> Quick Add Templates
+              </div>
+              <span className="text-[10px] bg-gray-100 px-2 py-0.5 rounded-full">
+                {showQuickAdd ? 'Collapse' : 'Expand'}
+              </span>
+            </button>
+            <AnimatePresence>
+              {showQuickAdd && (
+                <motion.div 
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden"
                 >
-                  <p className="font-bold text-sm group-hover:text-blue-600 truncate">{t.name}</p>
-                  <p className="text-xs text-gray-400 font-mono mt-1 truncate">{formatCurrency(t.amount, profile.currency)}</p>
-                </button>
-              ))}
-            </div>
+                  <div className="grid grid-cols-2 gap-3 pb-2">
+                    {(profile.quickAdds || []).map((t) => (
+                      <button
+                        key={t.id}
+                        onClick={() => handleQuickAdd(t)}
+                        className="p-4 bg-gray-50 rounded-2xl border border-gray-100 text-left hover:bg-blue-50 hover:border-blue-100 transition-all group min-w-0"
+                      >
+                        <p className="font-bold text-sm group-hover:text-blue-600 truncate">{t.name}</p>
+                        <p className="text-xs text-gray-400 font-mono mt-1 truncate">{formatCurrency(t.amount, profile.currency)}</p>
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </section>
         )}
 
@@ -142,7 +162,7 @@ export default function ExpenseForm({ onClose }: { onClose: () => void }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-4">
             <div className="space-y-2">
               <label className="text-xs font-bold text-gray-500 uppercase ml-1">Date</label>
               <input
@@ -153,13 +173,13 @@ export default function ExpenseForm({ onClose }: { onClose: () => void }) {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-bold text-gray-500 uppercase ml-1">Notes</label>
-              <input
-                type="text"
+              <label className="text-xs font-bold text-gray-500 uppercase ml-1">Note / Description</label>
+              <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="What for?"
-                className="w-full bg-gray-50 border-none rounded-2xl py-3 px-4 text-sm font-medium focus:ring-2 focus:ring-blue-500 transition-all"
+                placeholder="What was this for?"
+                rows={2}
+                className="w-full bg-gray-50 border-none rounded-2xl py-4 px-4 text-sm font-medium focus:ring-2 focus:ring-blue-500 transition-all resize-none"
               />
             </div>
           </div>
