@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useFinanceStore } from '../store/useFinanceStore';
 import { personas } from '../lib/mockData';
-import { User, Shield, Database, Trash2, UserCircle, Wallet, Plus, Target, Settings2, Download, Upload, RefreshCw, ShieldCheck, HelpCircle, Lock } from 'lucide-react';
+import { User, Shield, Database, Trash2, UserCircle, Wallet, Plus, Target, Settings2, Download, Upload, RefreshCw, ShieldCheck, HelpCircle, Lock, ChevronRight } from 'lucide-react';
 import { dbHelper } from '../lib/db';
 import { Category } from '../types';
 import { formatCurrency, getCurrencySymbol, cn } from '../lib/utils';
@@ -111,326 +111,335 @@ export default function Settings() {
   };
 
   return (
-    <div className="space-y-8">
-      <h2 className="text-2xl font-bold">Settings</h2>
+    <div className="space-y-12 pb-24">
+      <div className="flex justify-between items-end px-1">
+        <div>
+          <h2 className="text-3xl font-display font-bold text-slate-900">Control</h2>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">System Architecture</p>
+        </div>
+      </div>
 
       {/* Profile Section */}
       <section className="space-y-4">
         <div className="flex justify-between items-center px-1">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
-            <UserCircle className="w-3 h-3" /> User Profile
+          <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+            <UserCircle className="w-3 h-3" /> Identity
           </h3>
           <button 
             onClick={() => setIsEditingProfile(!isEditingProfile)}
-            className="text-xs font-bold text-blue-600 uppercase"
+            className="text-[10px] font-bold text-blue-600 uppercase tracking-widest px-3 py-1 bg-blue-50 rounded-lg hover:bg-blue-100 transition-all font-display"
           >
-            {isEditingProfile ? 'Cancel' : 'Edit'}
+            {isEditingProfile ? 'Cancel' : 'Modify'}
           </button>
         </div>
         
-        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-4">
+        <div className="bg-white p-8 rounded-[3rem] border border-slate-50 shadow-sm space-y-6">
           {isEditingProfile ? (
-            <div className="space-y-4">
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Name</label>
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Alias/Name</label>
                 <input 
                   type="text" 
                   value={editName} 
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full bg-gray-50 border-none rounded-xl py-2 px-3 text-sm font-medium"
+                  className="w-full bg-slate-50 border-2 border-transparent rounded-2xl py-4 px-5 text-sm font-bold focus:bg-white focus:border-blue-500 transition-all outline-none"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Monthly Income</label>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Monthly Inflow</label>
                   <input 
                     type="number" 
                     value={editIncome} 
                     onChange={(e) => setEditIncome(e.target.value)}
-                    className="w-full bg-gray-50 border-none rounded-xl py-2 px-3 text-sm font-medium"
+                    className="w-full bg-slate-50 border-2 border-transparent rounded-2xl py-4 px-5 text-sm font-bold focus:bg-white focus:border-blue-500 transition-all outline-none"
                   />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Payday (Day of Month)</label>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Pay Cycle Day</label>
                   <input 
                     type="number" 
                     min="1" 
                     max="31"
                     value={editPayday} 
                     onChange={(e) => setEditPayday(e.target.value)}
-                    className="w-full bg-gray-50 border-none rounded-xl py-2 px-3 text-sm font-medium"
+                    className="w-full bg-slate-50 border-2 border-transparent rounded-2xl py-4 px-5 text-sm font-bold focus:bg-white focus:border-blue-500 transition-all outline-none"
                   />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Currency</label>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Currency Standard</label>
                   <select 
                     value={editCurrency} 
                     onChange={(e) => setEditCurrency(e.target.value)}
-                    className="w-full bg-gray-50 border-none rounded-xl py-2 px-3 text-sm font-medium"
+                    className="w-full bg-slate-50 border-2 border-transparent rounded-2xl py-4 px-5 text-sm font-bold focus:bg-white focus:border-blue-500 transition-all outline-none appearance-none"
                   >
                     {commonCurrencies.map(c => (
                       <option key={c.code} value={c.code}>{c.name}</option>
                     ))}
                   </select>
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Low Balance Threshold</label>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Alert Threshold</label>
                   <input 
                     type="number" 
                     value={editThreshold} 
                     onChange={(e) => setEditThreshold(e.target.value)}
-                    className="w-full bg-gray-50 border-none rounded-xl py-2 px-3 text-sm font-medium"
+                    className="w-full bg-slate-50 border-2 border-transparent rounded-2xl py-4 px-5 text-sm font-bold focus:bg-white focus:border-blue-500 transition-all outline-none"
                   />
                 </div>
               </div>
               <button 
                 onClick={handleSaveProfile}
-                className="w-full bg-blue-600 text-white py-2 rounded-xl font-bold text-sm"
+                className="w-full bg-slate-900 text-white py-5 rounded-[2rem] font-display font-bold text-lg shadow-xl shadow-slate-200 active:scale-[0.98] transition-all"
               >
-                Save Profile
+                Apply Protocols
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xl">
+            <div className="flex items-center gap-6">
+              <div className="w-20 h-20 bg-blue-600 rounded-[2rem] flex items-center justify-center text-white font-display font-bold text-3xl shadow-xl shadow-blue-100">
                 {profile.name[0]}
               </div>
-              <div>
-                <p className="font-bold text-lg">{profile.name}</p>
-                <p className="text-xs text-gray-400 font-medium">Income: {formatCurrency(profile.monthlyIncome, profile.currency, profile.privacyMode)} • Payday: {profile.payday}</p>
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Budget Planner Section */}
-      <section className="space-y-4">
-        <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 px-1 flex items-center gap-2">
-          <Wallet className="w-3 h-3" /> Budget Planner
-        </h3>
-        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden divide-y divide-gray-50">
-          {categories.map(cat => {
-            const budget = (profile.budgets || []).find(b => b.category === cat);
-            return (
-              <div key={cat} className="p-4 flex items-center justify-between gap-4">
-                <span className="text-sm font-bold text-gray-700 truncate">{cat}</span>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className="text-[10px] font-bold text-gray-400 uppercase">
-                    {getCurrencySymbol(profile.currency)}
-                  </span>
-                  <input 
-                    type="number"
-                    placeholder="0"
-                    value={budget?.limit || ''}
-                    onChange={(e) => updateBudget(cat, Number(e.target.value))}
-                    className="w-20 bg-gray-50 border-none rounded-lg py-1 px-2 text-right text-sm font-bold font-mono"
-                  />
+              <div className="space-y-1">
+                <p className="text-2xl font-display font-bold text-slate-900 leading-tight">{profile.name}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none">
+                    {profile.currency} • {formatCurrency(profile.monthlyIncome, profile.currency, profile.privacyMode)} Volume
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 mt-3">
+                  <div className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black tracking-widest uppercase">Verified</div>
+                  <div className="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black tracking-widest uppercase">Gold Tier</div>
                 </div>
               </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Quick Adds Management */}
-      <section className="space-y-4">
-        <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 px-1 flex items-center gap-2">
-          <Plus className="w-3 h-3" /> Manage Quick Adds
-        </h3>
-        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden divide-y divide-gray-50">
-          {(profile.quickAdds || []).map(qa => (
-            <div key={qa.id} className="p-4 flex items-center justify-between gap-4">
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-bold truncate">{qa.name}</p>
-                <p className="text-[10px] text-gray-400 font-bold uppercase truncate">{qa.category} • {formatCurrency(qa.amount, profile.currency, profile.privacyMode)}</p>
-              </div>
-              <button 
-                onClick={() => deleteQuickAdd(qa.id)}
-                className="p-2 text-gray-300 hover:text-red-500 transition-colors flex-shrink-0"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
-          {(profile.quickAdds || []).length === 0 && (
-            <div className="p-8 text-center text-xs text-gray-400 font-medium">
-              No custom quick-adds yet. Add them from the expense form!
             </div>
           )}
         </div>
       </section>
 
-      {/* Data Management Section */}
-      <section className="space-y-4">
-        <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 px-1 flex items-center gap-2">
-          <ShieldCheck className="w-3 h-3" /> Privacy & Security
-        </h3>
-        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden divide-y divide-gray-50">
-          <div className="p-4 space-y-4">
+      {/* Budget & Commands Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <section className="space-y-4">
+          <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 px-2 flex items-center gap-2">
+            <Wallet className="w-3 h-3" /> Allocation
+          </h3>
+          <div className="bg-white rounded-[2.5rem] border border-slate-50 shadow-sm overflow-hidden p-2">
+            {categories.map(cat => {
+              const budget = (profile.budgets || []).find(b => b.category === cat);
+              return (
+                <div key={cat} className="p-4 flex items-center justify-between group hover:bg-slate-50 rounded-2xl transition-colors">
+                  <span className="text-sm font-bold text-slate-700 group-hover:text-blue-600 transition-colors">{cat}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{getCurrencySymbol(profile.currency)}</span>
+                    <input 
+                      type="number"
+                      placeholder="0"
+                      value={budget?.limit || ''}
+                      onChange={(e) => updateBudget(cat, Number(e.target.value))}
+                      className="w-20 bg-slate-100 border-none rounded-xl py-2 px-3 text-right text-sm font-bold font-mono focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all outline-none"
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 px-2 flex items-center gap-2">
+            <Plus className="w-3 h-3" /> Commands
+          </h3>
+          <div className="bg-white rounded-[2.5rem] border border-slate-50 shadow-sm overflow-hidden p-4 space-y-3">
+            {(profile.quickAdds || []).map(qa => (
+              <div key={qa.id} className="p-4 bg-slate-50 rounded-2xl flex items-center justify-between group transition-all">
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors uppercase tracking-tight">{qa.name}</p>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{qa.category} • {formatCurrency(qa.amount, profile.currency, profile.privacyMode)}</p>
+                </div>
+                <button 
+                  onClick={() => deleteQuickAdd(qa.id)}
+                  className="p-2 text-slate-300 hover:text-red-500 transition-colors hover:bg-red-50 rounded-xl"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+            {(profile.quickAdds || []).length === 0 && (
+              <div className="py-12 text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                No custom protocols established.
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
+
+      {/* Security & Data Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <section className="space-y-4">
+          <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 px-2 flex items-center gap-2">
+            <ShieldCheck className="w-3 h-3" /> Security
+          </h3>
+          <div className="bg-white p-6 rounded-[2.5rem] border border-slate-50 shadow-sm space-y-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <Lock className="w-5 h-5 text-purple-600" />
-                <div className="text-left">
-                  <p className="text-sm font-bold">Privacy Lock</p>
-                  <p className="text-[10px] text-gray-400 font-medium uppercase">Require PIN on startup</p>
+                <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center">
+                  <Lock className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-slate-900">Privacy Vault</p>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Biometric/PIN Access</p>
                 </div>
               </div>
               <button
                 onClick={() => setShowPinInput(!showPinInput)}
                 className={cn(
-                  "w-10 h-6 rounded-full transition-all relative",
-                  profile.privacyLock ? "bg-purple-600" : "bg-gray-200"
+                  "w-12 h-7 rounded-full transition-all relative p-1",
+                  profile.privacyLock ? "bg-purple-600 shadow-lg shadow-purple-200" : "bg-slate-200"
                 )}
               >
                 <div className={cn(
-                  "absolute top-1 w-4 h-4 bg-white rounded-full transition-all",
-                  profile.privacyLock ? "left-5" : "left-1"
+                  "w-5 h-5 bg-white rounded-full transition-all shadow-sm",
+                  profile.privacyLock ? "translate-x-5" : "translate-x-0"
                 )} />
               </button>
             </div>
             
             {showPinInput && (
-              <div className="flex gap-2 animate-in fade-in slide-in-from-top-2">
+              <div className="flex gap-3 animate-in fade-in slide-in-from-top-2">
                 <input 
                   type="password"
                   maxLength={4}
-                  placeholder="4-digit PIN"
+                  placeholder="0000"
                   value={pin}
                   onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
-                  className="flex-1 bg-gray-50 border-none rounded-xl py-2 px-3 text-sm font-bold font-mono text-center tracking-widest"
+                  className="flex-1 bg-slate-50 border-2 border-slate-100 rounded-2xl py-4 px-4 text-xl font-bold font-mono text-center tracking-[0.5em] focus:border-purple-500 outline-none transition-all"
                 />
                 <button 
                   onClick={() => {
                     setPrivacyLock(pin || undefined);
                     setShowPinInput(false);
                   }}
-                  className="bg-purple-600 text-white px-4 rounded-xl text-xs font-bold"
+                  className="bg-purple-600 text-white px-6 rounded-2xl text-[10px] font-black tracking-widest uppercase hover:bg-purple-700 active:scale-95 transition-all"
                 >
-                  Set
+                  Verify
                 </button>
               </div>
             )}
           </div>
-        </div>
-      </section>
+        </section>
 
+        <section className="space-y-4">
+          <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 px-2 flex items-center gap-2">
+            <Database className="w-3 h-3" /> Infrastructure
+          </h3>
+          <div className="bg-white rounded-[2.5rem] border border-slate-50 shadow-sm overflow-hidden divide-y divide-slate-50">
+            <button 
+              onClick={exportData}
+              className="w-full p-6 flex items-center gap-5 text-slate-900 hover:bg-slate-50 transition-colors group"
+            >
+              <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center group-hover:bg-slate-900 group-hover:text-white transition-all">
+                <Download className="w-6 h-6" />
+              </div>
+              <div className="text-left">
+                <p className="text-lg font-bold">Cold Storage Backup</p>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Serialise records to JSON</p>
+              </div>
+            </button>
+            
+            <button 
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isImporting}
+              className="w-full p-6 flex items-center gap-5 text-slate-900 hover:bg-slate-50 transition-colors disabled:opacity-50 group"
+            >
+              <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center group-hover:bg-slate-900 group-hover:text-white transition-all">
+                {isImporting ? <RefreshCw className="w-6 h-6 animate-spin" /> : <Upload className="w-6 h-6" />}
+              </div>
+              <div className="text-left">
+                <p className="text-lg font-bold">Synchronize Protocol</p>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Inject archive into hardware</p>
+              </div>
+            </button>
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleFileChange} 
+              accept=".json" 
+              className="hidden" 
+            />
+
+            <button 
+              onClick={() => {
+                showConfirm(
+                  'Initialization Request?',
+                  'This will permanently delete all records from this node. Proceed with wipe?',
+                  async () => {
+                    await clearAllData();
+                    window.location.reload();
+                  }
+                );
+              }}
+              className="w-full p-6 flex items-center gap-5 text-red-600 hover:bg-red-50 transition-colors group"
+            >
+              <div className="w-12 h-12 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center group-hover:bg-red-600 group-hover:text-white transition-all">
+                <Trash2 className="w-6 h-6" />
+              </div>
+              <div className="text-left">
+                <p className="text-lg font-bold">Initialize Wipe</p>
+                <p className="text-[10px] text-red-400 font-bold uppercase tracking-widest">Reset non-volatile memory</p>
+              </div>
+            </button>
+          </div>
+        </section>
+      </div>
+
+      {/* Personas Section */}
       <section className="space-y-4">
-        <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 px-1 flex items-center gap-2">
-          <Database className="w-3 h-3" /> Data Management
+        <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 px-1 flex items-center gap-2">
+          <Shield className="w-3 h-3" /> Archetypes
         </h3>
-        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden divide-y divide-gray-50">
-          <button 
-            onClick={exportData}
-            className="w-full p-4 flex items-center gap-4 text-gray-700 hover:bg-gray-50 transition-colors"
-          >
-            <Download className="w-5 h-5 text-blue-600" />
-            <div className="text-left">
-              <p className="text-sm font-bold">Backup Data</p>
-              <p className="text-[10px] text-gray-400 font-medium uppercase">Export all your data to a JSON file</p>
-            </div>
-          </button>
-          
-          <button 
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isImporting}
-            className="w-full p-4 flex items-center gap-4 text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
-          >
-            {isImporting ? <RefreshCw className="w-5 h-5 text-blue-600 animate-spin" /> : <Upload className="w-5 h-5 text-blue-600" />}
-            <div className="text-left">
-              <p className="text-sm font-bold">Restore Data</p>
-              <p className="text-[10px] text-gray-400 font-medium uppercase">Import data from a backup file</p>
-            </div>
-          </button>
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            onChange={handleFileChange} 
-            accept=".json" 
-            className="hidden" 
-          />
-
-          <button 
-            onClick={() => {
-              showConfirm(
-                'Factory Reset?',
-                'Are you sure you want to clear all data? This will reset your profile, expenses, bills, and goals. This action cannot be undone.',
-                async () => {
-                  await clearAllData();
-                  window.location.reload();
-                }
-              );
-            }}
-            className="w-full p-4 flex items-center gap-4 text-red-600 hover:bg-red-50 transition-colors"
-          >
-            <Trash2 className="w-5 h-5" />
-            <div className="text-left">
-              <p className="text-sm font-bold">Clear All Data</p>
-              <p className="text-[10px] text-gray-400 font-medium uppercase">Wipe everything and start fresh</p>
-            </div>
-          </button>
-        </div>
-      </section>
-
-      {/* Demo Personas */}
-      <section className="space-y-4">
-        <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 px-1 flex items-center gap-2">
-          <Shield className="w-3 h-3" /> Demo Personas
-        </h3>
-        <div className="grid grid-cols-1 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Object.entries(personas).map(([key, p]) => (
             <button
               key={key}
               onClick={() => handleLoadPersona(key as any)}
-              className="p-4 bg-white rounded-2xl border border-gray-100 text-left hover:border-blue-500 transition-all flex justify-between items-center group gap-4"
+              className="p-6 bg-white rounded-[2.5rem] border border-slate-50 shadow-sm text-left hover:border-blue-500 hover:shadow-xl hover:shadow-blue-50 transition-all flex justify-between items-center group gap-4 active:scale-95"
             >
-              <div className="min-w-0 flex-1">
-                <p className="font-bold text-sm group-hover:text-blue-600 truncate">{p.profile.name}</p>
-                <p className="text-[10px] text-gray-400 font-medium uppercase mt-1 truncate">
-                  Income: {formatCurrency(p.profile.monthlyIncome, profile.currency, profile.privacyMode)} • {p.expenses.length} Expenses
+              <div className="min-w-0 flex-1 space-y-1">
+                <p className="text-xl font-display font-bold text-slate-900 group-hover:text-blue-600 transition-colors truncate">{p.profile.name}</p>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest truncate">
+                  Strategy: {formatCurrency(p.profile.monthlyIncome, profile.currency, profile.privacyMode)} Volume
                 </p>
               </div>
-              <Shield className="w-4 h-4 text-gray-200 group-hover:text-blue-500 flex-shrink-0" />
+              <ChevronRight className="w-5 h-5 text-slate-200 group-hover:text-blue-500 transition-all" />
             </button>
           ))}
         </div>
       </section>
 
-      {/* Help & Support */}
-      <section className="space-y-4">
-        <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 px-1 flex items-center gap-2">
-          <HelpCircle className="w-3 h-3" /> Help & Support
-        </h3>
-        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden divide-y divide-gray-50">
-          <button 
-            onClick={async () => {
-              // Reset tour flag to false
-              const newProfile = { ...profile, hasSeenTour: false };
-              await dbHelper.put('profile', { ...newProfile, id: 'current' });
-              window.location.reload();
-            }}
-            className="w-full p-4 flex items-center gap-4 text-gray-700 hover:bg-gray-50 transition-colors"
-          >
-            <HelpCircle className="w-5 h-5 text-blue-600" />
-            <div className="text-left">
-              <p className="text-sm font-bold">Quick Tour</p>
-              <p className="text-[10px] text-gray-400 font-medium uppercase">Re-watch the onboarding tour</p>
-            </div>
-          </button>
-          
-          <div className="p-4 flex items-center gap-4 text-gray-700">
-            <Shield className="w-5 h-5 text-blue-600" />
-            <div className="text-left">
-              <p className="text-sm font-bold">Privacy Policy</p>
-              <p className="text-[10px] text-gray-400 font-medium uppercase">Your data never leaves this device</p>
-            </div>
+      {/* Support Section */}
+      <section className="space-y-6 pt-12 pb-24">
+        <div className="bg-slate-900 p-10 rounded-[3rem] text-white text-center space-y-6 relative overflow-hidden group shadow-2xl shadow-slate-200">
+          <div className="relative z-10 space-y-4">
+            <h4 className="text-3xl font-display font-bold">Institutional Security</h4>
+            <p className="text-slate-400 text-sm max-w-sm mx-auto leading-relaxed">
+              Your financial identity is cryptographically isolated on this device. Prunance does not use cloud relays for personal data.
+            </p>
+          </div>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px] -mr-32 -mt-32" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-[60px] -ml-24 -mb-24" />
+        </div>
+        
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100">
+            <Target className="w-6 h-6 text-slate-300" />
+          </div>
+          <div className="text-center">
+            <p className="text-[10px] font-black text-slate-900 uppercase tracking-[0.6em]">Prunance Interface 1.0.2</p>
+            <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest mt-1">Advanced Terminal System</p>
           </div>
         </div>
-        <p className="text-center text-[10px] text-gray-300 font-bold uppercase tracking-widest py-4">
-          Prosper Finance v1.0.0
-        </p>
       </section>
 
       {/* Custom Modal */}
@@ -442,25 +451,25 @@ export default function Settings() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setModal(null)}
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.9, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative bg-white w-full max-w-sm rounded-[2.5rem] p-8 shadow-2xl space-y-6"
+              exit={{ opacity: 0, scale: 0.9, y: 30 }}
+              className="relative bg-white w-full max-w-sm rounded-[3rem] p-10 shadow-2xl space-y-8"
             >
-              <div className="text-center space-y-2">
-                <h4 className="text-xl font-bold">{modal.title}</h4>
-                <p className="text-sm text-gray-500 leading-relaxed">{modal.message}</p>
+              <div className="text-center space-y-3">
+                <h4 className="text-2xl font-display font-bold text-slate-900">{modal.title}</h4>
+                <p className="text-sm text-slate-500 leading-relaxed font-medium">{modal.message}</p>
               </div>
               <div className="flex gap-3">
                 {modal.type === 'confirm' && (
                   <button
                     onClick={() => setModal(null)}
-                    className="flex-1 py-3 px-4 bg-gray-100 text-gray-600 rounded-2xl font-bold text-sm"
+                    className="flex-1 py-4 px-4 bg-slate-100 text-slate-500 rounded-2xl font-bold text-xs uppercase tracking-widest active:scale-95 transition-all"
                   >
-                    Cancel
+                    Abuse
                   </button>
                 )}
                 <button
@@ -469,11 +478,11 @@ export default function Settings() {
                     setModal(null);
                   }}
                   className={cn(
-                    "flex-1 py-3 px-4 rounded-2xl font-bold text-sm text-white",
-                    modal.type === 'confirm' ? "bg-red-600" : "bg-blue-600"
+                    "flex-1 py-4 px-4 rounded-2xl font-bold text-xs uppercase tracking-widest text-white active:scale-95 transition-all shadow-lg",
+                    modal.type === 'confirm' ? "bg-red-600 shadow-red-100" : "bg-slate-900 shadow-slate-100"
                   )}
                 >
-                  {modal.type === 'confirm' ? 'Confirm' : 'OK'}
+                  {modal.type === 'confirm' ? 'Confirm' : 'Accept'}
                 </button>
               </div>
             </motion.div>

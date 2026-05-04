@@ -173,28 +173,15 @@ export function useAlerts() {
   }, []);
 
   useEffect(() => {
-    if (!profile.name || useFinanceStore.getState().isInitialized === false) return;
-
-    // Check which alerts have NOT been notified yet
-    const notifiedIds = profile.notifiedAlerts || [];
-    const unnotifiedAlerts = filteredAlerts.filter(alert => !notifiedIds.includes(alert.id));
-
-    if (unnotifiedAlerts.length > 0) {
-      unnotifiedAlerts.forEach(alert => {
+    // If we have new alerts that weren't there before
+    if (filteredAlerts.length > lastAlertCount.current) {
+      const newAlerts = filteredAlerts.slice(lastAlertCount.current);
+      newAlerts.forEach(alert => {
         notificationService.schedule(alert.title, alert.message);
-        useFinanceStore.getState().markAlertAsNotified(alert.id);
       });
     }
-
-    // 5. Security Alert (One time)
-    if (!profile.privacyLock && !notifiedIds.includes('security-lock-suggest')) {
-      notificationService.schedule(
-        'Secure Your Data', 
-        'Tap to set up a Privacy Lock and protect your financial info.'
-      );
-      useFinanceStore.getState().markAlertAsNotified('security-lock-suggest');
-    }
-  }, [filteredAlerts, profile.notifiedAlerts, profile.name]);
+    lastAlertCount.current = filteredAlerts.length;
+  }, [filteredAlerts]);
 
   return {
     allAlerts: alerts,

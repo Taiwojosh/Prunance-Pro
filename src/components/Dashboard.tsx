@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useFinanceStore } from '../store/useFinanceStore';
 import { useAlerts } from '../hooks/useAlerts';
 import { formatCurrency, cn } from '../lib/utils';
-import { AlertCircle, TrendingUp, TrendingDown, CheckCircle2, ArrowRight, Plus, Target, Sparkles, Shield } from 'lucide-react';
+import { AlertCircle, TrendingUp, TrendingDown, CheckCircle2, ArrowRight, Plus, Target, Sparkles, CalendarClock, Activity } from 'lucide-react';
 import { motion } from 'motion/react';
 import { format, addDays, isAfter, isBefore, startOfWeek, endOfWeek, subWeeks, startOfMonth } from 'date-fns';
 import { getTipOfTheDay } from '../lib/tips';
@@ -32,6 +32,14 @@ export default function Dashboard({ onAddExpense, onNavigate }: { onAddExpense: 
 
   const totalUpcoming = upcomingBills.reduce((sum, b) => sum + b.amount, 0);
 
+  const systemHealth = useMemo(() => {
+    const totalLimit = budgetProgress.reduce((sum, b) => sum + b.limit, 0);
+    const totalSpent = budgetProgress.reduce((sum, b) => sum + b.spent, 0);
+    if (totalLimit === 0) return 100;
+    const usage = (totalSpent / totalLimit) * 100;
+    return Math.max(0, 100 - usage);
+  }, [budgetProgress]);
+
   const dailyTip = useMemo(() => getTipOfTheDay(), []);
 
   return (
@@ -52,76 +60,142 @@ export default function Dashboard({ onAddExpense, onNavigate }: { onAddExpense: 
         </div>
       </motion.div>
 
-      {/* Privacy Lock Suggestion */}
-      {!profile.privacyLock && (
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="bg-blue-600 p-4 rounded-3xl text-white flex items-center justify-between shadow-lg shadow-blue-100"
-        >
-          <div className="flex items-center gap-3">
-            <div className="bg-white/20 p-2 rounded-xl">
-              <Shield className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-sm font-bold">Secure your data</p>
-              <p className="text-[10px] opacity-80 uppercase font-bold">Setup Privacy Lock</p>
-            </div>
-          </div>
-          <button 
-            onClick={() => onNavigate('settings')}
-            className="bg-white text-blue-600 px-4 py-2 rounded-xl text-xs font-bold"
-          >
-            Enable
-          </button>
-        </motion.div>
-      )}
-
       {/* Welcome Section */}
-      <section className="tour-dashboard flex justify-between items-end">
-        <div>
-          <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">Welcome back,</p>
-          <h2 className="text-3xl font-bold tracking-tight">{profile.name || 'Friend'}</h2>
+      <section className="flex justify-between items-start pt-4">
+        <div className="space-y-1">
+          <motion.div 
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2"
+          >
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Live Portfolio</span>
+          </motion.div>
+          <h2 className="text-4xl font-display font-bold tracking-tight text-slate-900">
+            Hello, <span className="text-blue-600">{profile.name || 'Friend'}</span>
+          </h2>
         </div>
-        <div className="text-right">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Today</p>
-          <p className="text-sm font-bold text-gray-900">{format(new Date(), 'MMM d, yyyy')}</p>
+        <div className="bg-white/50 backdrop-blur-md border border-white p-3 rounded-2xl shadow-sm">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Portfolio Value</p>
+          <p className="text-lg font-display font-bold text-slate-900">
+            {formatCurrency(profile.monthlyIncome - expenses.reduce((sum, e) => sum + e.amount, 0), profile.currency, profile.privacyMode)}
+          </p>
         </div>
       </section>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-slate-50 p-6 rounded-[2.5rem] border border-blue-50 shadow-sm relative overflow-hidden">
-          <div className="relative z-10">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1 truncate">Monthly Income</p>
-            <p className="text-xl font-bold font-mono text-emerald-600 truncate" title={formatCurrency(profile.monthlyIncome, profile.currency, profile.privacyMode)}>
+      {/* Bento Grid */}
+      <div className="grid grid-cols-6 grid-rows-3 gap-4 h-[420px]">
+        {/* Main Income Card */}
+        <motion.div 
+          whileHover={{ y: -5 }}
+          className="col-span-4 row-span-2 bg-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden flex flex-col justify-between"
+        >
+          <div className="relative z-10 space-y-1">
+            <p className="text-xs font-medium text-slate-400 uppercase tracking-widest">Monthly Revenue</p>
+            <h3 className="text-5xl font-display font-bold leading-none tracking-tighter">
               {formatCurrency(profile.monthlyIncome, profile.currency, profile.privacyMode)}
-            </p>
+            </h3>
           </div>
-          <div className="absolute -right-4 -bottom-4 w-16 h-16 bg-emerald-100/30 rounded-full blur-xl" />
-        </div>
-        <div className="bg-slate-50 p-6 rounded-[2.5rem] border border-blue-50 shadow-sm relative overflow-hidden">
+          
           <div className="relative z-10">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1 truncate">Upcoming Bills</p>
-            <p className="text-xl font-bold font-mono text-orange-600 truncate" title={formatCurrency(totalUpcoming, profile.currency, profile.privacyMode)}>
-              {formatCurrency(totalUpcoming, profile.currency, profile.privacyMode)}
+            <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
+              <TrendingUp className="w-4 h-4" />
+              <span>+12.5% from last month</span>
+            </div>
+          </div>
+
+          {/* Abstract background elements */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 rounded-full blur-[80px] -mr-32 -mt-32" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-[60px] -ml-24 -mb-24" />
+        </motion.div>
+
+        {/* Info Card: Tip */}
+        <motion.div 
+          whileHover={{ y: -5 }}
+          className="col-span-2 row-span-1 bg-blue-600 rounded-[2.5rem] p-6 text-white relative overflow-hidden flex flex-col justify-center"
+        >
+          <Sparkles className="w-6 h-6 mb-3 text-blue-200" />
+          <p className="text-[11px] leading-snug font-medium italic opacity-90 line-clamp-3">
+            "{dailyTip}"
+          </p>
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
+        </motion.div>
+
+        {/* Info Card: Bills */}
+        <motion.div 
+          whileHover={{ y: -5 }}
+          onClick={() => onNavigate('strategy')}
+          className="col-span-2 row-span-1 bg-white rounded-[2.5rem] p-6 border border-slate-100 shadow-sm flex flex-col justify-center gap-1 cursor-pointer"
+        >
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">To Pay</p>
+          <p className="text-2xl font-display font-bold text-orange-600">
+            {formatCurrency(totalUpcoming, profile.currency, profile.privacyMode)}
+          </p>
+          <div className="flex items-center gap-1 text-[9px] font-bold text-slate-400">
+            <CalendarClock className="w-3 h-3" />
+            <span>7 DAYS REMAINING</span>
+          </div>
+        </motion.div>
+
+        {/* Info Card: Budget Stats */}
+        <motion.div 
+          whileHover={{ y: -5 }}
+          onClick={() => onNavigate('strategy')}
+          className="col-span-3 row-span-1 bg-[#F1F5F9] rounded-[2.5rem] p-6 flex items-center justify-between group cursor-pointer"
+        >
+          <div className="space-y-1">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Budget Utility</p>
+            <p className="text-2xl font-display font-bold text-slate-900">
+              {budgetProgress.length > 0 
+                ? Math.round((budgetProgress.reduce((sum, b) => sum + b.spent, 0) / budgetProgress.reduce((sum, b) => sum + b.limit, 0)) * 100) 
+                : 0}%
             </p>
           </div>
-          <div className="absolute -right-4 -bottom-4 w-16 h-16 bg-orange-100/30 rounded-full blur-xl" />
+          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm group-hover:bg-slate-900 group-hover:text-white transition-all">
+            <Plus className="w-6 h-6" />
+          </div>
+        </motion.div>
+
+        {/* Info Card: System Health */}
+        <div className="col-span-3 row-span-1 bg-white rounded-[2.5rem] p-6 flex flex-col justify-between relative overflow-hidden border border-slate-100 shadow-sm group">
+          <div className="flex justify-between items-start relative z-10">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Protocol Health</p>
+            <div className={cn(
+              "w-6 h-6 rounded-lg flex items-center justify-center transition-colors",
+              systemHealth > 50 ? "bg-emerald-50 text-emerald-600" :
+              systemHealth > 20 ? "bg-orange-50 text-orange-600" : "bg-red-50 text-red-600"
+            )}>
+              <Activity className="w-3.5 h-3.5" />
+            </div>
+          </div>
+          <div className="space-y-2 relative z-10">
+            <div className="flex items-end gap-1.5">
+              <span className="text-3xl font-display font-bold text-slate-900 tracking-tight">
+                {systemHealth > 80 ? 'Prime' : systemHealth > 50 ? 'Stable' : systemHealth > 20 ? 'Degraded' : 'Critical'}
+              </span>
+              <span className={cn(
+                "text-[10px] font-black uppercase tracking-widest pb-1.5",
+                systemHealth > 50 ? "text-emerald-500" :
+                systemHealth > 20 ? "text-orange-500" : "text-red-500"
+              )}>
+                {Math.round(systemHealth)}%
+              </span>
+            </div>
+            <div className="h-1 bg-slate-50 rounded-full overflow-hidden">
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: `${systemHealth}%` }}
+                className={cn(
+                  "h-full rounded-full transition-all duration-1000",
+                  systemHealth > 50 ? "bg-emerald-500" :
+                  systemHealth > 20 ? "bg-orange-500" : "bg-red-500"
+                )}
+              />
+            </div>
+          </div>
+          <div className="absolute -right-8 -bottom-8 w-24 h-24 bg-slate-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-all" />
         </div>
       </div>
-
-      {/* Prudence Tip */}
-      <section className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden">
-        <div className="relative z-10 space-y-2">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-blue-600" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">Prudence Tip</span>
-          </div>
-          <p className="text-lg font-medium leading-tight text-gray-900">"{dailyTip}"</p>
-        </div>
-        <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-blue-50 rounded-full blur-2xl opacity-50" />
-      </section>
 
       {/* Budget Progress */}
       {budgetProgress.length > 0 && (
@@ -196,7 +270,7 @@ export default function Dashboard({ onAddExpense, onNavigate }: { onAddExpense: 
           <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">Savings Goals</h3>
           <motion.button 
             whileTap={{ scale: 0.95 }}
-            onClick={() => onNavigate('goals')}
+            onClick={() => onNavigate('strategy')}
             className="text-blue-600 text-xs font-bold flex items-center gap-1"
           >
             View All <ArrowRight className="w-3 h-3" />
@@ -250,7 +324,7 @@ export default function Dashboard({ onAddExpense, onNavigate }: { onAddExpense: 
         whileTap={{ scale: 0.9 }}
         whileHover={{ scale: 1.1 }}
         onClick={onAddExpense}
-        className="tour-add-expense fixed bottom-24 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg shadow-blue-200 flex items-center justify-center transition-all z-30"
+        className="fixed bottom-24 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg shadow-blue-200 flex items-center justify-center transition-all z-30"
       >
         <Plus className="w-6 h-6" />
       </motion.button>

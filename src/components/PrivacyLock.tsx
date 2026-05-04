@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useFinanceStore } from '../store/useFinanceStore';
 import { motion, AnimatePresence } from 'motion/react';
-import { Lock, Delete, ArrowRight } from 'lucide-react';
+import { Lock, Delete, ArrowRight, ShieldCheck } from 'lucide-react';
 import { cn } from '../lib/utils';
-import Logo from './Logo';
 
 export default function PrivacyLock() {
   const { profile } = useFinanceStore();
@@ -43,8 +42,8 @@ export default function PrivacyLock() {
     >
       <div className="w-full max-w-xs space-y-12 text-center">
         <div className="space-y-4">
-          <div className="w-20 h-20 bg-blue-50 rounded-[1.5rem] flex items-center justify-center mx-auto shadow-sm p-3">
-            <Logo className="w-full h-full" />
+          <div className="w-20 h-20 bg-purple-100 rounded-3xl flex items-center justify-center mx-auto">
+            <ShieldCheck className="w-10 h-10 text-purple-600" />
           </div>
           <div className="space-y-1">
             <h2 className="text-2xl font-bold text-gray-900">Privacy Lock</h2>

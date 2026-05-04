@@ -20,7 +20,7 @@ const generateRandomExpenses = (count: number, daysBack: number): Expense[] => {
 
 export const personas = {
   student: {
-    profile: { name: 'Alex (Student)', monthlyIncome: 1200, payday: 1, currency: 'USD', lowBalanceThreshold: 50 },
+    profile: { name: 'Alex (Student)', monthlyIncome: 1200, payday: 1, currency: 'NGN', lowBalanceThreshold: 50 },
     expenses: generateRandomExpenses(20, 30),
     bills: [
       { id: 'b1', name: 'Rent', amount: 600, dueDate: startOfMonth(new Date()).toISOString(), frequency: 'monthly', category: 'Bills' },
@@ -31,7 +31,7 @@ export const personas = {
     ] as SavingsGoal[]
   },
   professional: {
-    profile: { name: 'Sarah (Professional)', monthlyIncome: 4500, payday: 25, currency: 'USD', lowBalanceThreshold: 200 },
+    profile: { name: 'Sarah (Professional)', monthlyIncome: 4500, payday: 25, currency: 'NGN', lowBalanceThreshold: 200 },
     expenses: generateRandomExpenses(40, 60),
     bills: [
       { id: 'b1', name: 'Mortgage', amount: 1800, dueDate: '2026-04-25', frequency: 'monthly', category: 'Bills' },
@@ -44,7 +44,7 @@ export const personas = {
     ] as SavingsGoal[]
   },
   frugal: {
-    profile: { name: 'Mark (Frugal)', monthlyIncome: 2800, payday: 28, currency: 'USD', lowBalanceThreshold: 100 },
+    profile: { name: 'Mark (Frugal)', monthlyIncome: 2800, payday: 28, currency: 'NGN', lowBalanceThreshold: 100 },
     expenses: generateRandomExpenses(15, 30).map(e => ({ ...e, amount: e.amount * 0.5 })),
     bills: [
       { id: 'b1', name: 'Shared Rent', amount: 400, dueDate: '2026-04-28', frequency: 'monthly', category: 'Bills' }

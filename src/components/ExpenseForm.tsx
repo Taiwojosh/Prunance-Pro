@@ -4,7 +4,6 @@ import { Category, QuickAddTemplate } from '../types';
 import { X, Receipt, Plus, History, Save } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { formatCurrency, getCurrencySymbol, cn } from '../lib/utils';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 const categories: Category[] = ['Food', 'Transport', 'Shopping', 'Entertainment', 'Health', 'Bills', 'Other'];
 
@@ -16,7 +15,6 @@ export default function ExpenseForm({ onClose }: { onClose: () => void }) {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [saveAsTemplate, setSaveAsTemplate] = useState(false);
   const [templateName, setTemplateName] = useState('');
-  const [showQuickAdd, setShowQuickAdd] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,11 +22,6 @@ export default function ExpenseForm({ onClose }: { onClose: () => void }) {
     
     const expenseAmount = Number(amount);
     
-    // Premium Haptic Feedback
-    try {
-      Haptics.impact({ style: ImpactStyle.Light });
-    } catch (e) {}
-
     addExpense({
       amount: expenseAmount,
       category,
@@ -48,10 +41,6 @@ export default function ExpenseForm({ onClose }: { onClose: () => void }) {
   };
 
   const handleQuickAdd = (template: QuickAddTemplate) => {
-    try {
-      Haptics.impact({ style: ImpactStyle.Medium });
-    } catch (e) {}
-
     addExpense({
       amount: template.amount,
       category: template.category,
@@ -79,64 +68,47 @@ export default function ExpenseForm({ onClose }: { onClose: () => void }) {
       >
         <div className="absolute top-3 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full" />
         
-        <div className="p-6 pt-10">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold">Add Expense</h2>
-            <button onClick={onClose} className="p-2 bg-gray-100 rounded-full">
+        <div className="p-8 pt-10">
+          <div className="flex justify-between items-center mb-10">
+            <div>
+              <h2 className="text-3xl font-display font-bold text-slate-900 line-none">New Entry</h2>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">Record your transaction</p>
+            </div>
+            <button onClick={onClose} className="p-3 bg-slate-50 text-slate-400 rounded-2xl hover:bg-slate-100 transition-colors">
               <X className="w-5 h-5" />
             </button>
           </div>
 
         {/* Quick Add Section */}
         {(profile.quickAdds || []).length > 0 && (
-          <section className="mb-8">
-            <button 
-              onClick={() => setShowQuickAdd(!showQuickAdd)}
-              className="w-full flex justify-between items-center text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 px-1"
-            >
-              <div className="flex items-center gap-2">
-                <Plus className="w-3 h-3" /> Quick Add Templates
-              </div>
-              <span className="text-[10px] bg-gray-100 px-2 py-0.5 rounded-full">
-                {showQuickAdd ? 'Collapse' : 'Expand'}
-              </span>
-            </button>
-            <AnimatePresence>
-              {showQuickAdd && (
-                <motion.div 
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="overflow-hidden"
+          <section className="mb-10">
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-5 flex items-center gap-2">
+              <Plus className="w-3 h-3" /> Frequent
+            </h3>
+            <div className="grid grid-cols-2 gap-4">
+              {(profile.quickAdds || []).map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => handleQuickAdd(t)}
+                  className="p-5 bg-white rounded-3xl border border-slate-100 text-left hover:border-blue-500 hover:shadow-lg hover:shadow-blue-50 transition-all group relative overflow-hidden"
                 >
-                  <div className="grid grid-cols-2 gap-3 pb-2">
-                    {(profile.quickAdds || []).map((t) => (
-                      <button
-                        key={t.id}
-                        onClick={() => handleQuickAdd(t)}
-                        className="p-4 bg-gray-50 rounded-2xl border border-gray-100 text-left hover:bg-blue-50 hover:border-blue-100 transition-all group min-w-0"
-                      >
-                        <p className="font-bold text-sm group-hover:text-blue-600 truncate">{t.name}</p>
-                        <p className="text-xs text-gray-400 font-mono mt-1 truncate">{formatCurrency(t.amount, profile.currency)}</p>
-                      </button>
-                    ))}
+                  <div className="relative z-10">
+                    <p className="font-bold text-slate-900 group-hover:text-blue-600 truncate">{t.name}</p>
+                    <p className="text-xs text-slate-400 font-bold font-mono mt-1 truncate">{formatCurrency(t.amount, profile.currency)}</p>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  <div className="absolute -right-2 -bottom-2 w-12 h-12 bg-blue-50 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                </button>
+              ))}
+            </div>
           </section>
         )}
 
         {/* Manual Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
-            <Receipt className="w-3 h-3" /> Manual Entry
-          </h3>
-          
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Amount</label>
-            <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="space-y-3">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Value</label>
+            <div className="relative group">
+              <span className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 font-display font-bold text-3xl group-focus-within:text-blue-500 transition-colors">
                 {getCurrencySymbol(profile.currency)}
               </span>
               <input
@@ -145,25 +117,25 @@ export default function ExpenseForm({ onClose }: { onClose: () => void }) {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full bg-gray-50 border-none rounded-2xl py-4 pl-16 pr-4 text-xl font-bold font-mono focus:ring-2 focus:ring-blue-500 transition-all"
+                className="w-full bg-slate-50 border-2 border-transparent rounded-[2rem] py-8 pl-16 pr-6 text-5xl font-display font-bold tracking-tighter text-slate-900 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all placeholder:text-slate-200"
                 autoFocus
               />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Category</label>
-            <div className="grid grid-cols-3 gap-2">
+          <div className="space-y-3">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Type</label>
+            <div className="flex flex-wrap gap-2">
               {categories.map((c) => (
                 <button
                   key={c}
                   type="button"
                   onClick={() => setCategory(c)}
                   className={cn(
-                    "py-3 rounded-xl text-xs font-bold transition-all border",
+                    "px-6 py-3 rounded-2xl text-xs font-bold transition-all border-2",
                     category === c 
-                      ? "bg-blue-600 text-white border-blue-600" 
-                      : "bg-white text-gray-500 border-gray-100 hover:bg-gray-50"
+                      ? "bg-slate-900 text-white border-slate-900 shadow-xl shadow-slate-200" 
+                      : "bg-white text-slate-400 border-slate-100 hover:border-slate-300"
                   )}
                 >
                   {c}
@@ -172,64 +144,91 @@ export default function ExpenseForm({ onClose }: { onClose: () => void }) {
             </div>
           </div>
 
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-gray-500 uppercase ml-1">Date</label>
+          <div className="grid grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">When</label>
               <input
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full bg-gray-50 border-none rounded-2xl py-3 px-4 text-sm font-medium focus:ring-2 focus:ring-blue-500 transition-all"
+                className="w-full bg-slate-50 border-2 border-transparent rounded-2xl py-4 px-5 text-sm font-bold focus:bg-white focus:border-blue-500 transition-all"
               />
             </div>
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-gray-500 uppercase ml-1">Note / Description</label>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="What was this for?"
-                rows={2}
-                className="w-full bg-gray-50 border-none rounded-2xl py-4 px-4 text-sm font-medium focus:ring-2 focus:ring-blue-500 transition-all resize-none"
-              />
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Detail</label>
+              <div className="space-y-3">
+                <input
+                  type="text"
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Purpose?"
+                  className="w-full bg-slate-50 border-2 border-transparent rounded-2xl py-4 px-5 text-sm font-bold focus:bg-white focus:border-blue-500 transition-all placeholder:text-slate-300"
+                />
+                <div className="flex flex-wrap gap-2">
+                  {(category === 'Food' ? ['Coffee', 'Groceries', 'Lunch', 'Takeout'] :
+                    category === 'Transport' ? ['Fuel', 'Uber', 'Parking', 'Toll'] :
+                    category === 'Shopping' ? ['Clothes', 'Tech', 'Home', 'Gift'] :
+                    ['Standard', 'Service', 'Misc']).map(chip => (
+                    <button
+                      key={chip}
+                      type="button"
+                      onClick={() => setNotes(chip)}
+                      className={cn(
+                        "px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
+                        notes === chip ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-400 hover:bg-slate-200"
+                      )}
+                    >
+                      {chip}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="bg-gray-50 p-4 rounded-2xl space-y-4">
+          <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100/50 space-y-6">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Save className="w-4 h-4 text-gray-400" />
-                <span className="text-xs font-bold text-gray-600 uppercase">Save as Quick Add?</span>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                  <Save className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-slate-900 uppercase tracking-widest">Recurring Pattern?</span>
+                  <p className="text-[10px] text-slate-400 font-medium">Save this setup as a frequent action</p>
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => setSaveAsTemplate(!saveAsTemplate)}
                 className={cn(
-                  "w-10 h-6 rounded-full transition-all relative",
-                  saveAsTemplate ? "bg-blue-600" : "bg-gray-200"
+                  "w-12 h-7 rounded-full transition-all relative p-1",
+                  saveAsTemplate ? "bg-emerald-500" : "bg-slate-200"
                 )}
               >
                 <div className={cn(
-                  "absolute top-1 w-4 h-4 bg-white rounded-full transition-all",
-                  saveAsTemplate ? "left-5" : "left-1"
+                  "w-5 h-5 bg-white rounded-full shadow-sm transition-all",
+                  saveAsTemplate ? "translate-x-5" : "translate-x-0"
                 )} />
               </button>
             </div>
             {saveAsTemplate && (
-              <input
-                type="text"
-                value={templateName}
-                onChange={(e) => setTemplateName(e.target.value)}
-                placeholder="Template Name (e.g. Morning Coffee)"
-                className="w-full bg-white border-none rounded-xl py-2 px-3 text-xs font-medium focus:ring-2 focus:ring-blue-500 transition-all"
-              />
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
+                <input
+                  type="text"
+                  value={templateName}
+                  onChange={(e) => setTemplateName(e.target.value)}
+                  placeholder="Template ID (e.g. Daily Espresso)"
+                  className="w-full bg-white border-2 border-slate-100 rounded-2xl py-3 px-4 text-xs font-bold focus:border-blue-500 transition-all outline-none"
+                />
+              </motion.div>
             )}
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-100 hover:bg-blue-700 active:scale-[0.98] transition-all mt-4"
+            className="w-full bg-blue-600 text-white py-6 rounded-[2rem] font-display font-bold text-lg shadow-2xl shadow-blue-100 hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all"
           >
-            Save Expense
+            Authorize Transaction
           </button>
         </form>
       </div>

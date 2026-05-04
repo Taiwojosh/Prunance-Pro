@@ -14,7 +14,7 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
     monthlyIncome: 0,
     payday: 1,
     budgets: [],
-    currency: 'USD',
+    currency: 'NGN',
     lowBalanceThreshold: 50,
     hasSeenTour: false,
     privacyMode: false,
@@ -23,10 +23,8 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
       { id: 'q2', name: 'Lunch', amount: 12, category: 'Food' },
       { id: 'q3', name: 'Bus Fare', amount: 2.5, category: 'Transport' },
       { id: 'q4', name: 'Grocery', amount: 45, category: 'Food' },
-    ],
-    notifiedAlerts: []
+    ]
   },
-  isInitialized: false,
 
   addExpense: async (expenseData) => {
     const expense = { ...expenseData, id: generateId() };
@@ -172,8 +170,7 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
           { id: 'q2', name: 'Lunch', amount: 12, category: 'Food' },
           { id: 'q3', name: 'Bus Fare', amount: 2.5, category: 'Transport' },
           { id: 'q4', name: 'Grocery', amount: 45, category: 'Food' },
-        ],
-        notifiedAlerts: []
+        ]
       }
     });
   },
@@ -246,18 +243,6 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
     set({ profile: newProfile });
   },
 
-  markAlertAsNotified: async (id) => {
-    const notifiedAlerts = get().profile.notifiedAlerts || [];
-    if (notifiedAlerts.includes(id)) return;
-    
-    const newProfile = { 
-      ...get().profile, 
-      notifiedAlerts: [...notifiedAlerts, id] 
-    };
-    await dbHelper.put('profile', { ...newProfile, id: 'current' });
-    set({ profile: newProfile });
-  },
-
   // Initialize store from DB
   init: async () => {
     const expenses = await dbHelper.getAll<Expense>('expenses');
@@ -275,10 +260,9 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
         ...dbProfile,
         budgets: dbProfile.budgets || [],
         quickAdds: dbProfile.quickAdds || get().profile.quickAdds,
-        currency: dbProfile.currency || 'USD',
+        currency: dbProfile.currency || 'NGN',
         lowBalanceThreshold: dbProfile.lowBalanceThreshold || 100
-      } : get().profile,
-      isInitialized: true
+      } : get().profile
     });
   }
 }));

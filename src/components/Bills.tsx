@@ -58,16 +58,15 @@ export default function Bills() {
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center px-1">
-        <h2 className="text-2xl font-bold">Recurring Bills</h2>
+      <div className="flex justify-end px-1">
         <button 
           onClick={() => {
             if (showForm) resetForm();
             else setShowForm(true);
           }}
           className={cn(
-            "p-2 rounded-full shadow-lg transition-all",
-            showForm ? "bg-gray-100 text-gray-500" : "bg-blue-600 text-white shadow-blue-100"
+            "p-3 rounded-2xl shadow-lg transition-all",
+            showForm ? "bg-slate-100 text-slate-500" : "bg-blue-600 text-white shadow-blue-100 active:scale-95"
           )}
         >
           {showForm ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
@@ -75,43 +74,40 @@ export default function Bills() {
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-3xl border border-blue-100 shadow-sm space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">
-            {editingBillId ? 'Edit Bill' : 'New Recurring Bill'}
-          </h3>
+        <form onSubmit={handleSubmit} className="bg-white p-8 rounded-[2.5rem] border border-blue-50 shadow-sm space-y-6">
           <div className="space-y-2">
-            <label className="text-xs font-bold text-gray-400 uppercase">Bill Name</label>
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Vendor/Service</label>
             <input 
               type="text" 
               value={name} 
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-gray-50 border-none rounded-xl py-3 px-4 text-sm font-medium"
-              placeholder="e.g. Netflix"
+              className="w-full bg-slate-50 border-2 border-transparent rounded-2xl py-4 px-5 text-sm font-bold focus:bg-white focus:border-blue-500 transition-all outline-none"
+              placeholder="e.g. AWS Infrastructure"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-gray-400 uppercase">Amount</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Fee</label>
               <input 
                 type="number" 
                 value={amount} 
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full bg-gray-50 border-none rounded-xl py-3 px-4 text-sm font-medium"
+                className="w-full bg-slate-50 border-2 border-transparent rounded-2xl py-4 px-5 text-sm font-bold focus:bg-white focus:border-blue-500 transition-all outline-none"
                 placeholder="0.00"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-bold text-gray-400 uppercase">Due Date</label>
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Next Settlement</label>
               <input 
                 type="date" 
                 value={dueDate} 
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full bg-gray-50 border-none rounded-xl py-3 px-4 text-sm font-medium"
+                className="w-full bg-slate-50 border-2 border-transparent rounded-2xl py-4 px-5 text-sm font-bold focus:bg-white focus:border-blue-500 transition-all outline-none"
               />
             </div>
           </div>
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-gray-400 uppercase">Frequency</label>
+          <div className="space-y-3">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Interval</label>
             <div className="flex gap-2">
               {['weekly', 'monthly', 'yearly'].map((f) => (
                 <button
@@ -119,8 +115,8 @@ export default function Bills() {
                   type="button"
                   onClick={() => setFrequency(f as any)}
                   className={cn(
-                    "flex-1 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-all",
-                    frequency === f ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-400 border-gray-100"
+                    "flex-1 py-3 rounded-xl text-[10px] font-bold uppercase tracking-wider border-2 transition-all",
+                    frequency === f ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-400 border-slate-50 hover:border-slate-100"
                   )}
                 >
                   {f}
@@ -128,51 +124,56 @@ export default function Bills() {
               ))}
             </div>
           </div>
-          <button type="submit" className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-sm">
-            {editingBillId ? 'Update Bill' : 'Add Recurring Bill'}
+          <button type="submit" className="w-full bg-blue-600 text-white py-5 rounded-[2rem] font-display font-bold text-lg shadow-xl shadow-blue-50 hover:bg-blue-700 active:scale-[0.98] transition-all">
+            {editingBillId ? 'Update Subscription' : 'Initialize Obligation'}
           </button>
         </form>
       )}
 
-      <div className="space-y-4">
+      <div className="space-y-6">
         {bills.length > 0 ? (
           bills.map((bill) => {
             const isUpcoming = isBefore(new Date(bill.dueDate), addDays(new Date(), 3));
             return (
-              <div key={bill.id} className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex justify-between items-center group gap-4">
+              <div key={bill.id} className="group bg-white p-6 rounded-[2.5rem] border border-slate-50 shadow-sm flex justify-between items-center gap-4 hover:shadow-md transition-all">
                 <div className="flex items-center gap-4 min-w-0 flex-1">
                   <div className={cn(
-                    "p-3 rounded-2xl flex-shrink-0",
-                    isUpcoming ? "bg-orange-50 text-orange-600" : "bg-gray-50 text-gray-400"
+                    "w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-colors",
+                    isUpcoming ? "bg-orange-50 text-orange-600" : "bg-slate-50 text-slate-400 group-hover:bg-slate-900 group-hover:text-white"
                   )}>
-                    <Calendar className="w-5 h-5" />
+                    <Calendar className="w-6 h-6" />
                   </div>
                   <div className="min-w-0">
-                    <p className="font-bold text-sm truncate">{bill.name}</p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate">
-                        {format(new Date(bill.dueDate), 'MMM d')} • {bill.frequency}
+                    <p className="text-lg font-bold text-slate-900 truncate tracking-tight">{bill.name}</p>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-0.5">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">
+                        {format(new Date(bill.dueDate), 'MMMM d')}
+                      </p>
+                      <span className="w-1 h-1 rounded-full bg-slate-200" />
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">
+                        {bill.frequency}
                       </p>
                       {isUpcoming && (
-                        <span className="flex items-center gap-1 text-[8px] font-bold text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded-full uppercase flex-shrink-0">
-                          <Bell className="w-2 h-2" /> Reminder Sent
-                        </span>
+                        <div className="flex items-center gap-1.5 px-2 py-0.5 bg-orange-100 text-orange-600 rounded-lg">
+                          <div className="w-1 h-1 rounded-full bg-orange-600 animate-pulse" />
+                          <span className="text-[9px] font-bold uppercase tracking-widest">Priority</span>
+                        </div>
                       )}
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 flex-shrink-0">
-                  <p className="font-bold text-sm font-mono whitespace-nowrap">{formatCurrency(bill.amount, profile.currency, profile.privacyMode)}</p>
+                <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                  <p className="text-xl font-display font-bold text-slate-900">{formatCurrency(bill.amount, profile.currency, profile.privacyMode)}</p>
                   <div className="flex items-center gap-1">
                     <button 
                       onClick={() => handleEdit(bill)}
-                      className="p-2 text-gray-200 hover:text-blue-500 transition-colors"
+                      className="p-2 text-slate-200 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all"
                     >
                       <Settings2 className="w-4 h-4" />
                     </button>
                     <button 
                       onClick={() => deleteBill(bill.id)}
-                      className="p-2 text-gray-200 hover:text-red-500 transition-colors"
+                      className="p-2 text-slate-200 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -182,11 +183,14 @@ export default function Bills() {
             );
           })
         ) : (
-          <div className="py-20 text-center">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Calendar className="w-8 h-8 text-gray-300" />
+          <div className="py-24 text-center space-y-4">
+            <div className="w-20 h-20 bg-slate-50 border border-slate-100 rounded-[2.5rem] flex items-center justify-center mx-auto shadow-sm">
+              <Calendar className="w-10 h-10 text-slate-200" />
             </div>
-            <p className="text-gray-400 font-medium">No recurring bills yet.</p>
+            <div>
+              <p className="text-slate-900 font-bold text-lg">No Active Obligations</p>
+              <p className="text-slate-400 text-sm">Your recurring bills will be tracks here.</p>
+            </div>
           </div>
         )}
       </div>

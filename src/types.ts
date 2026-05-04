@@ -59,8 +59,6 @@ export interface UserProfile {
   hasSeenTour: boolean;
   privacyMode?: boolean;
   privacyLock?: string; // PIN
-  notifiedAlerts?: string[]; // IDs of alerts already sent as system notifications
-  hasSeenJoyride?: boolean;
 }
 
 export interface FinanceState {
@@ -68,7 +66,6 @@ export interface FinanceState {
   bills: Bill[];
   goals: SavingsGoal[];
   profile: UserProfile;
-  isInitialized: boolean;
   addExpense: (expense: Omit<Expense, 'id'>) => void;
   updateExpense: (id: string, expense: Partial<Expense>) => void;
   deleteExpense: (id: string) => void;
@@ -92,6 +89,5 @@ export interface FinanceState {
   completeTour: () => void;
   setPrivacyLock: (pin: string | undefined) => void;
   togglePrivacyMode: () => void;
-  markAlertAsNotified: (id: string) => void;
   init: () => Promise<void>;
 }

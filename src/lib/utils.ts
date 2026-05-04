@@ -5,15 +5,22 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatCurrency(amount: number, currency: string = 'USD', isPrivate: boolean = false) {
+export function formatCurrency(amount: number, currency: string = 'NGN', isPrivate: boolean = false) {
   if (isPrivate) return '••••';
+  if (currency === 'NGN') {
+    return '₦' + amount.toLocaleString('en-NG', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: currency,
   }).format(amount);
 }
 
-export function getCurrencySymbol(currency: string = 'USD') {
+export function getCurrencySymbol(currency: string = 'NGN') {
+  if (currency === 'NGN') return '₦';
   return (0).toLocaleString('en-US', {
     style: 'currency',
     currency: currency,
